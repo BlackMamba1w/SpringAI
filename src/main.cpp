@@ -8,7 +8,7 @@
 using json = nlohmann::json;
 using namespace std;
 int main(int argc, char* argv[]) {
-    /* std::cout << R"(
+    /* cout << R"(
     ╭──────────────────────────────────────────────────────────────╮
     │                                                              │
     │   ███████╗██████╗ ██████╗ ██╗███╗   ██╗ ██████╗  █████╗ ██╗  │
@@ -66,6 +66,27 @@ int main(int argc, char* argv[]) {
                     }}
                 }}
             }
+            {
+                {"type", "function"},
+                {"function", {
+                    {"name", "Write"},
+                    {"description", "Write content to a file"},
+                    {"parameters", {
+                        {"type", "object"},
+                        {"required", {"file_path", "content"}},
+                        {"properties", {
+                            {"file_path", {
+                                {"type", "string"},
+                                {"description", "The path of the file to write to"}
+                            }},
+                            {"content", {
+                                {"type", "string"},
+                                {"description", "The content to write to the file"}
+                            }}
+                        }}
+                    }}
+                }}
+            }
         })}
     };
     while (true){
@@ -74,6 +95,7 @@ int main(int argc, char* argv[]) {
         string args;
         json args_data;
         string filepath;
+        string contents;
         cpr::Response http = cpr::Post(
             cpr::Url{base_url + "/chat/completions"},
             cpr::Header{
@@ -104,6 +126,12 @@ int main(int argc, char* argv[]) {
         if (tool == "Read"){
             filepath = args_data["file_path"];
             json toolMessage = readFile(filepath, toolcall["id"].get<string>());
+            request_body["messages"].push_back(toolMessage);
+        }
+        else if(tool == "Write"){
+            filepath = args_data["file_path"];
+            contents = args_data["content"];
+            json toolMessage = readFile(filepath, contents, toolcall["id"].get<string>());
             request_body["messages"].push_back(toolMessage);
         }
     }
