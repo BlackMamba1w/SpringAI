@@ -8,6 +8,20 @@ understand code and perform actions through tool calls. In this challenge,
 I will build my own Claude Code from scratch by implementing an LLM-powered
 coding assistant.
 
+```
+╭──────────────────────────────────────────────────────────────╮
+│                                                              │
+│   ███████╗██████╗ ██████╗ ██╗███╗   ██╗ ██████╗  █████╗ ██╗  │
+│   ██╔════╝██╔══██╗██╔══██╗██║████╗  ██║██╔════╝ ██╔══██╗██║  │
+│   ███████╗██████╔╝██████╔╝██║██╔██╗ ██║██║  ███╗███████║██║  │
+│   ╚════██║██╔═══╝ ██╔══██╗██║██║╚██╗██║██║   ██║██╔══██║██║  │
+│   ███████║██║     ██║  ██║██║██║ ╚████║╚██████╔╝██║  ██║██║  │
+│   ╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  │
+│                                                              │
+│          AI-powered coding from your terminal.               │
+│                                                              │
+╰──────────────────────────────────────────────────────────────╯
+```
 I will be using HTTP RESTful APIs (OpenAI-compatible tool), calling, agent loop, and how to integrate multiple tools into an AI assistant.
 
 
@@ -17,7 +31,7 @@ The entry point for my `claude-code` implementation is in `src/main.cpp`.
 This project is mainly for me to learn json parsing, and to learn how to pull API requests from openAI. Will complete by 7/16/2026.
 
 ```sh
-claude.sh
+./claude.sh
 ```
 
 # Programme structure
