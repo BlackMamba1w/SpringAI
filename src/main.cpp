@@ -105,9 +105,9 @@ int main(int argc, char* argv[]) {
             
         }
     }
-    else if (!content.is_null()){
-        // TODO: Uncomment the line below to pass the first stage
-        cout << content << endl;
+    if (message.contains("content") && message["content"].is_string()) {
+    std::string content = message["content"];
+    std::cout << content << '\n';
     }
     return 0;
 }
