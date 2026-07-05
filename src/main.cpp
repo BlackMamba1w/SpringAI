@@ -4,9 +4,25 @@
 #include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
 #include <filesystem>
+#include "funcs.hpp"
 using json = nlohmann::json;
 using namespace std;
 int main(int argc, char* argv[]) {
+    /* std::cout << R"(
+    ╭──────────────────────────────────────────────────────────────╮
+    │                                                              │
+    │   ███████╗██████╗ ██████╗ ██╗███╗   ██╗ ██████╗  █████╗ ██╗  │
+    │   ██╔════╝██╔══██╗██╔══██╗██║████╗  ██║██╔════╝ ██╔══██╗██║  │
+    │   ███████╗██████╔╝██████╔╝██║██╔██╗ ██║██║  ███╗███████║██║  │
+    │   ╚════██║██╔═══╝ ██╔══██╗██║██║╚██╗██║██║   ██║██╔══██║██║  │
+    │   ███████║██║     ██║  ██║██║██║ ╚████║╚██████╔╝██║  ██║██║  │
+    │   ╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  │
+    │                                                              │
+    │          AI-powered coding from your terminal.               │
+    │                                                              │
+    ╰──────────────────────────────────────────────────────────────╯
+    )"; 
+    */
     if (argc < 3 || string(argv[1]) != "-p") {
         cerr << "Expected first argument to be '-p'" << endl;
         return 1;
@@ -52,51 +68,46 @@ int main(int argc, char* argv[]) {
             }
         })}
     };
-    cpr::Response response = cpr::Post(
-        cpr::Url{base_url + "/chat/completions"},
-        cpr::Header{
-            {"Authorization", "Bearer " + api_key},
-            {"Content-Type", "application/json"}
-        },
-        cpr::Body{request_body.dump()}
-    );
-    if (response.status_code != 200) {
-        cerr << "HTTP error: " << response.status_code << endl;
-        return 1;
-    }
-    json result = json::parse(response.text);
-    if (!result.contains("choices") || result["choices"].empty()) {
-        cerr << "No choices in response" << endl;
-        return 1;
-    }
-    string func_name;
-    string filepath;
-    string content;
-    json message = result["choices"][0]["message"];
-    if (message.contains("tool_calls") && !message["tool_calls"].is_null()){
-        json toolcall = result["choices"][0]["message"]["tool_calls"][0];
-        func_name = toolcall["function"]["name"].get<string>();
-        string args = result["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"];
-        json args_data = json::parse(args);
-        filepath = args_data["file_path"];
-    }
-    else{
-        content = result["choices"][0]["message"]["content"].get<string>();
-    }
-    // You can use print statements as follows for debugging, they'll be visible when running tests.
-    cerr << "Logs from your program will appear here!" << endl;
-    if (func_name == "Read"){
-        if (filesystem::exists(filepath)){
-            ifstream inFile(filepath);
-            string line;
-            while (getline(inFile, line)){
-                cout << line << endl;
+    while (message.contains("tool_calls") && !message["tool_calls"].is_null()){
+        json toolcall;
+        string tool;
+        string args;
+        json args_data;
+        cpr::Response response = cpr::Post(
+            cpr::Url{base_url + "/chat/completions"},
+            cpr::Header{
+                {"Authorization", "Bearer " + api_key},
+                {"Content-Type", "application/json"}
+            },
+            cpr::Body{request_body.dump()}
+        );
+        if (response.status_code != 200) {
+            cerr << "HTTP error: " << response.status_code << endl;
+            return 1;
+        }
+        json response = json::parse(response.text);
+        if (!response.contains("choices") || response["choices"].empty()) {
+            cerr << "No choices in response" << endl;
+            return 1;
+        }
+        request_body["messages"].push_back(response)
+        if (response.contains("tool_calls")){
+            toolcall = response["choices"][0]["message"]["tool_calls"][0];
+            tool = toolcall["function"]["name"].get<string>();
+            args = response["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"];
+            args_data = json::parse(args);
+            if (tool == "Read"){
+                filepath = args_data["file_path"];
+                json toolResponse = readFile(filepath, toolcall["id"].get<string>());
+                request_body["messages"].push_back(toolResponse)
             }
         }
     }
+    // You can use print statements as follows for debugging, they'll be visible when running tests.
+    cerr << "Logs from your program will appear here!" << endl;
     if (message.contains("content") && message["content"].is_string()) {
-    std::string content = message["content"];
-    std::cout << content << '\n';
+        std::string content = message["content"];
+        std::cout << content << '\n';
     }
     return 0;
 }
