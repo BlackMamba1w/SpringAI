@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
                 {"content", prompt}
             }
         })},
-        {"tools": json::array({
+        {"tools", {
             "type": "function",
             "function": {
                 "name": "Readtool",
@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
                     },
                     "required": ["file_path"]
                 }
-            }})
+            }}
         }
     };
 
