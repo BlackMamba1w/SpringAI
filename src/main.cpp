@@ -79,13 +79,16 @@ int main(int argc, char* argv[]) {
         cerr << "No choices in response" << endl;
         return 1;
     }
+    string func_name;
+    string filepath;
+    string content;
     json message = result["choices"][0]["message"];
     if (message.contains("tool_calls") && !message["tool_calls"].is_null()){
         json toolcall = result["choices"][0]["message"]["tool_calls"][0];
-        string func_name = toolcall["function"]["name"].get<string>();
+        func_name = toolcall["function"]["name"].get<string>();
         string args = result["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"];
         json args_data = json::parse(args);
-        string filepath = args_data["file_path"];
+        filepath = args_data["file_path"];
     }
     else{
         string content = result["choices"][0]["message"]["content"].get<string>();
