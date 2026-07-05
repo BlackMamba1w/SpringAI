@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
                 {"content", prompt}
             }
         })},
-        {"tools", json::array(
+        {"tools", json::array({
             {
                 {"type", "function"},
                 {"function", {
@@ -53,11 +53,11 @@ int main(int argc, char* argv[]) {
                                 {"description", "The path to the file to read"}
                             }}
                         }},
-                        {"required", json::array(["file_path"])}
+                        {"required", json::array({"file_path"})}
                     }}
                 }}
             }
-        )}
+        })}
     };
 
     cpr::Response response = cpr::Post(
