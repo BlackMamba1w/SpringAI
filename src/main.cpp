@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
         filepath = args_data["file_path"];
     }
     else{
-        string content = result["choices"][0]["message"]["content"].get<string>();
+        content = result["choices"][0]["message"]["content"].get<string>();
     }
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     cerr << "Logs from your program will appear here!" << endl;
