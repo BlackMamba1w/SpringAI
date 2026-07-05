@@ -1,4 +1,4 @@
-[![progress-banner](https://techolay.net/wp-content/uploads/2026/01/claude-banner-1160x653.png)](https://app.codecrafters.io/users/BlackMamba1w?r=2qF)
+[![progress-banner](https://camo.githubusercontent.com/f4f22828b0f14d4b9eab189bcd1df9caa7414ceb16e5cf64420a717df5ac4716/68747470733a2f2f6261636b656e642e636f646563726166746572732e696f2f70726f67726573732f636c617564652d636f64652f36666662373030312d616639632d343537322d386166342d653366306334366661346633)](https://app.codecrafters.io/users/BlackMamba1w?r=2qF)
 
 This is a starting point for C++ solutions to the
 ["Build Your own Claude Code" Challenge](https://codecrafters.io/challenges/claude-code).
