@@ -65,7 +65,7 @@ int main(int argc, char* argv[]) {
                         {"required", json::array({"file_path"})}
                     }}
                 }}
-            }
+            },
             {
                 {"type", "function"},
                 {"function", {
@@ -131,7 +131,7 @@ int main(int argc, char* argv[]) {
         else if(tool == "Write"){
             filepath = args_data["file_path"];
             contents = args_data["content"];
-            json toolMessage = readFile(filepath, contents, toolcall["id"].get<string>());
+            json toolMessage = writeFile(filepath, contents, toolcall["id"].get<string>());
             request_body["messages"].push_back(toolMessage);
         }
     }
