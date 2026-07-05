@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
         cerr << "No choices in response" << endl;
         return 1;
     }
-    json toolcall = json::parse(result["choices"][0]["message"]["tool_calls"].get<string>);
+    json toolcall = result["choices"][0]["message"]["tool_calls"][0];
     string func_name = toolcall["function"]["name"].get<string>();
     string args = result["choices"][0]["message"]["tool_calls"]["function"]["arguments"];
     json args_data = json::parse(args);
