@@ -96,9 +96,7 @@ int main(int argc, char* argv[]) {
             
         }
     }
-    else {
     // TODO: Uncomment the line below to pass the first stage
     cout << result["choices"][0]["message"]["content"].get<string>();
-    }
     return 0;
 }
