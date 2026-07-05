@@ -68,12 +68,12 @@ int main(int argc, char* argv[]) {
             }
         })}
     };
-    while (message.contains("tool_calls") && !message["tool_calls"].is_null()){
+    while (request_body["message"].contains("tool_calls") && !request_body["message"]["tool_calls"].is_null()){
         json toolcall;
         string tool;
         string args;
         json args_data;
-        cpr::Response response = cpr::Post(
+        cpr::Response response1 = cpr::Post(
             cpr::Url{base_url + "/chat/completions"},
             cpr::Header{
                 {"Authorization", "Bearer " + api_key},
@@ -81,11 +81,11 @@ int main(int argc, char* argv[]) {
             },
             cpr::Body{request_body.dump()}
         );
-        if (response.status_code != 200) {
-            cerr << "HTTP error: " << response.status_code << endl;
+        if (response1.status_code != 200) {
+            cerr << "HTTP error: " << response1.status_code << endl;
             return 1;
         }
-        json response = json::parse(response.text);
+        json response = json::parse(response1.text);
         if (!response.contains("choices") || response["choices"].empty()) {
             cerr << "No choices in response" << endl;
             return 1;
