@@ -68,12 +68,13 @@ int main(int argc, char* argv[]) {
             }
         })}
     };
-    while (request_body["message"].contains("tool_calls") && !request_body["message"]["tool_calls"].is_null()){
+    while (true){
         json toolcall;
         string tool;
         string args;
         json args_data;
-        cpr::Response response1 = cpr::Post(
+        string filepath;
+        cpr::Response http = cpr::Post(
             cpr::Url{base_url + "/chat/completions"},
             cpr::Header{
                 {"Authorization", "Bearer " + api_key},
@@ -81,26 +82,29 @@ int main(int argc, char* argv[]) {
             },
             cpr::Body{request_body.dump()}
         );
-        if (response1.status_code != 200) {
-            cerr << "HTTP error: " << response1.status_code << endl;
+        if (http.status_code != 200) {
+            cerr << "HTTP error: " << http.status_code << endl;
             return 1;
         }
-        json response = json::parse(response1.text);
+        json response = json::parse(http.text);
         if (!response.contains("choices") || response["choices"].empty()) {
             cerr << "No choices in response" << endl;
             return 1;
         }
-        request_body["messages"].push_back(response);
-        if (response.contains("tool_calls")){
-            toolcall = response["choices"][0]["message"]["tool_calls"][0];
-            tool = toolcall["function"]["name"].get<string>();
-            args = response["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"];
-            args_data = json::parse(args);
-            if (tool == "Read"){
-                filepath = args_data["file_path"];
-                json toolResponse = readFile(filepath, toolcall["id"].get<string>());
-                request_body["messages"].push_back(toolResponse)
-            }
+        json message = response["choices"][0]["message"];
+        if (!message.contains("tool_calls") || message["tool_calls"].is_null()) {
+            cout << message["content"].get<string>() << '\n';
+            break;
+        }
+        request_body["messages"].push_back(message);
+        toolcall = message["tool_calls"][0];
+        tool = toolcall["function"]["name"].get<string>();
+        args = message["tool_calls"][0]["function"]["arguments"];
+        args_data = json::parse(args);
+        if (tool == "Read"){
+            filepath = args_data["file_path"];
+            json toolMessage = readFile(filepath, toolcall["id"].get<string>());
+            request_body["messages"].push_back(toolMessage);
         }
     }
     // You can use print statements as follows for debugging, they'll be visible when running tests.
