@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
     }
     json toolcall = result["choices"][0]["message"]["tool_calls"][0];
     string func_name = toolcall["function"]["name"].get<string>();
-    string args = result["choices"][0]["message"]["tool_calls"]["function"]["arguments"].get<stringz>;
+    string args = result["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"];
     json args_data = json::parse(args);
     string filepath = args_data["file_path"];
     // You can use print statements as follows for debugging, they'll be visible when running tests.
