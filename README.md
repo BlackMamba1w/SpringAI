@@ -51,4 +51,4 @@ One can run the shell via *WSL* or *Terminal* by travelling to the directory and
    `src/main.cpp`.
 
 # Contact author
-Contact the author of this shell to suggest any improvements @ *k.sainandan2011@gmail.com* ! Will respond in 3-5 business days. This Project is about 20% complete, and I am planning to add my own features soon upon completing the challenge.
+Contact the author of this agent to suggest any improvements @ *k.sainandan2011@gmail.com* ! Will respond in 3-5 business days. This Project is about 20% complete, and I am planning to add my own features soon upon completing the challenge.
