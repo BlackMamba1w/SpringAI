@@ -79,11 +79,17 @@ int main(int argc, char* argv[]) {
         cerr << "No choices in response" << endl;
         return 1;
     }
-    json toolcall = result["choices"][0]["message"]["tool_calls"][0];
-    string func_name = toolcall["function"]["name"].get<string>();
-    string args = result["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"];
-    json args_data = json::parse(args);
-    string filepath = args_data["file_path"];
+    json message = result["choices"][0]["message"];
+    if (message.contains("tool_calls") && !message["tool_calls"].is_null()){
+        json toolcall = result["choices"][0]["message"]["tool_calls"][0];
+        string func_name = toolcall["function"]["name"].get<string>();
+        string args = result["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"];
+        json args_data = json::parse(args);
+        string filepath = args_data["file_path"];
+    }
+    else{
+        string content = result["choices"][0]["message"]["content"].get<string>();
+    }
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     cerr << "Logs from your program will appear here!" << endl;
     if (func_name == "Read"){
@@ -96,7 +102,9 @@ int main(int argc, char* argv[]) {
             
         }
     }
-    // TODO: Uncomment the line below to pass the first stage
-    cout << result["choices"][0]["message"]["content"].get<string>();
+    else if (!content.is_null()){
+        // TODO: Uncomment the line below to pass the first stage
+        cout << content << endl;
+    }
     return 0;
 }
