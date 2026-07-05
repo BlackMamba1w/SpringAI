@@ -3,8 +3,10 @@
 #include <memory>
 #include <string>
 #include <array>
+#include <nlohmann/json.hpp>
 using namespace std;
-json exec(const string& cmd){
+using json = nlohmann::json;
+json exec(const string& cmd, const string& tool_call_id){
     array<char, 128> buffer;
     string result;
     FILE* pipe = popen(cmd.c_str(), "r");
@@ -23,5 +25,5 @@ json exec(const string& cmd){
             {"role", "tool"},
             {"tool_call_id", tool_call_id},
             {"content", "The following command has been executed: " + result}
-        };;
+    };
 }

@@ -152,7 +152,7 @@ int main(int argc, char* argv[]) {
             request_body["messages"].push_back(toolMessage);
         }
         else if(tool == "Bash"){
-            json toolMessage = exec(args_data["command"]);
+            json toolMessage = exec(args_data["command"], toolcall["id"].get<string>());
             request_body["messages"].push_back(toolMessage);
         }
     }
