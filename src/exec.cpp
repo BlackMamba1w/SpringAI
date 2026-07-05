@@ -24,6 +24,6 @@ json exec(const string& cmd, const string& tool_call_id){
     return {
             {"role", "tool"},
             {"tool_call_id", tool_call_id},
-            {"content", "The following command has been executed: " + result}
+            {"content", result}
     };
 }
