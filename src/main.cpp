@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) {
             cerr << "No choices in response" << endl;
             return 1;
         }
-        request_body["messages"].push_back(response)
+        request_body["messages"].push_back(response);
         if (response.contains("tool_calls")){
             toolcall = response["choices"][0]["message"]["tool_calls"][0];
             tool = toolcall["function"]["name"].get<string>();
