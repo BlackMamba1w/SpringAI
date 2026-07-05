@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
                     {"description", "Execute a shell command"},
                     {"parameters", {
                     {"type", "object"},
-                    {"required", "command"},
+                    {"required", json::array({"command"})},
                     {"properties", {
                         {"command", {
                         {"type", "string"},
