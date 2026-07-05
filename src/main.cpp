@@ -105,9 +105,9 @@ int main(int argc, char* argv[]) {
     }
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     cerr << "Logs from your program will appear here!" << endl;
-    if (message.contains("content") && message["content"].is_string()) {
-        std::string content = message["content"];
-        std::cout << content << '\n';
+    if (request_body["message"].contains("content") && request_body["message"]["content"].is_string()) {
+        string content = request_body["message"]["content"];
+        cout << content << '\n';
     }
     return 0;
 }
