@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
                 {"content", prompt}
             }
         })},
-        {"tools", json::array({
+        {"tools": json::array({
             "type": "function",
             "function": {
                 "name": "Readtool",
