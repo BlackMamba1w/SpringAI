@@ -86,6 +86,23 @@ int main(int argc, char* argv[]) {
                         }}
                     }}
                 }}
+            },
+            {
+                {"type", "function"},
+                {"function", {
+                    {"name", "Bash"},
+                    {"description", "Execute a shell command"},
+                    {"parameters", {
+                    {"type", "object"},
+                    {"required", "command"},
+                    {"properties", {
+                        {"command", {
+                        {"type", "string"},
+                        {"description", "The command to execute"}
+                        }}
+                    }}
+                    }}
+                }}
             }
         })}
     };
@@ -132,6 +149,10 @@ int main(int argc, char* argv[]) {
             filepath = args_data["file_path"];
             contents = args_data["content"];
             json toolMessage = writeFile(filepath, contents, toolcall["id"].get<string>());
+            request_body["messages"].push_back(toolMessage);
+        }
+        else if(tool == "Bash"){
+            json toolMessage = exec(args_data["command"]);
             request_body["messages"].push_back(toolMessage);
         }
     }
