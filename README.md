@@ -1,34 +1,40 @@
-[![progress-banner](https://backend.codecrafters.io/progress/claude-code/6ffb7001-af9c-4572-8af4-e3f0c46fa4f3)](https://app.codecrafters.io/users/BlackMamba1w?r=2qF)
+[![progress-banner](https://techolay.net/wp-content/uploads/2026/01/claude-banner-1160x653.png)](https://app.codecrafters.io/users/BlackMamba1w?r=2qF)
 
 This is a starting point for C++ solutions to the
 ["Build Your own Claude Code" Challenge](https://codecrafters.io/challenges/claude-code).
 
 Claude Code is an AI coding assistant that uses Large Language Models (LLMs) to
 understand code and perform actions through tool calls. In this challenge,
-you'll build your own Claude Code from scratch by implementing an LLM-powered
+I will build my own Claude Code from scratch by implementing an LLM-powered
 coding assistant.
 
-Along the way you'll learn about HTTP RESTful APIs, OpenAI-compatible tool
-calling, agent loop, and how to integrate multiple tools into an AI assistant.
+I will be using HTTP RESTful APIs (OpenAI-compatible tool), calling, agent loop, and how to integrate multiple tools into an AI assistant.
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
 
-# Passing the first stage
+# Programme structure and aim
 
-The entry point for your `claude-code` implementation is in `src/main.cpp`.
-Study and uncomment the relevant code, and submit to pass the first stage:
+The entry point for my `claude-code` implementation is in `src/main.cpp`.
+This project is mainly for me to learn json parsing, and to learn how to pull API requests from openAI. Will complete by 7/16/2026.
 
 ```sh
-codecrafters submit
+claude.sh
 ```
 
-# Stage 2 & beyond
+# Programme structure
 
-Note: This section is for stages 2 and beyond.
+The entry point for my `shell` implementation is in `src/main.cpp`.
+All functions that I use in `src/main.cpp` can be found in `src/funcs.cpp` and are defined in `funcs.hpp`.
+One can run the shell via *WSL* or *Terminal* by travelling to the directory and running:
 
-1. Ensure you have `cmake` installed locally.
-2. Run `./your_program.sh` to run your program, which is implemented in
+```sh
+./claude.sh
+```
+
+# Set-up instructions:
+
+1. Ensure you have `cmake` installed locally
+2. Run `./claude.sh` to run your program, which is implemented in
    `src/main.cpp`.
-3. Run `codecrafters submit` to submit your solution to CodeCrafters. Test
-   output will be streamed to your terminal.
+
+# Contact author
+Contact the author of this shell to suggest any improvements @ *k.sainandan2011@gmail.com* ! Will respond in 3-5 business days. This Project is about 20% complete, and I am planning to add my own features soon upon completing the challenge.

@@ -11,25 +11,19 @@ int main(int argc, char* argv[]) {
         cerr << "Expected first argument to be '-p'" << endl;
         return 1;
     }
-
     string prompt = argv[2];
-
     if (prompt.empty()) {
         cerr << "Prompt must not be empty" << endl;
         return 1;
     }
-
     const char* api_key_env = getenv("OPENROUTER_API_KEY");
     const char* base_url_env = getenv("OPENROUTER_BASE_URL");
-
     string api_key = api_key_env ? api_key_env : "";
     string base_url = base_url_env ? base_url_env : "https://openrouter.ai/api/v1";
-
     if (api_key.empty()) {
         cerr << "OPENROUTER_API_KEY is not set" << endl;
         return 1;
     }
-
     json request_body = {
         {"model", "anthropic/claude-haiku-4.5"},
         {"messages", json::array({
@@ -58,7 +52,6 @@ int main(int argc, char* argv[]) {
             }
         })}
     };
-
     cpr::Response response = cpr::Post(
         cpr::Url{base_url + "/chat/completions"},
         cpr::Header{
@@ -67,14 +60,11 @@ int main(int argc, char* argv[]) {
         },
         cpr::Body{request_body.dump()}
     );
-
     if (response.status_code != 200) {
         cerr << "HTTP error: " << response.status_code << endl;
         return 1;
     }
-
     json result = json::parse(response.text);
-
     if (!result.contains("choices") || result["choices"].empty()) {
         cerr << "No choices in response" << endl;
         return 1;
@@ -102,7 +92,6 @@ int main(int argc, char* argv[]) {
             while (getline(inFile, line)){
                 cout << line << endl;
             }
-            
         }
     }
     if (message.contains("content") && message["content"].is_string()) {
