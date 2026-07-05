@@ -1,33 +1,32 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
-
 #include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
-
+#include <filesystem>
 using json = nlohmann::json;
-
+using namespace std;
 int main(int argc, char* argv[]) {
-    if (argc < 3 || std::string(argv[1]) != "-p") {
-        std::cerr << "Expected first argument to be '-p'" << std::endl;
+    if (argc < 3 || string(argv[1]) != "-p") {
+        cerr << "Expected first argument to be '-p'" << endl;
         return 1;
     }
 
-    std::string prompt = argv[2];
+    string prompt = argv[2];
 
     if (prompt.empty()) {
-        std::cerr << "Prompt must not be empty" << std::endl;
+        cerr << "Prompt must not be empty" << endl;
         return 1;
     }
 
-    const char* api_key_env = std::getenv("OPENROUTER_API_KEY");
-    const char* base_url_env = std::getenv("OPENROUTER_BASE_URL");
+    const char* api_key_env = getenv("OPENROUTER_API_KEY");
+    const char* base_url_env = getenv("OPENROUTER_BASE_URL");
 
-    std::string api_key = api_key_env ? api_key_env : "";
-    std::string base_url = base_url_env ? base_url_env : "https://openrouter.ai/api/v1";
+    string api_key = api_key_env ? api_key_env : "";
+    string base_url = base_url_env ? base_url_env : "https://openrouter.ai/api/v1";
 
     if (api_key.empty()) {
-        std::cerr << "OPENROUTER_API_KEY is not set" << std::endl;
+        cerr << "OPENROUTER_API_KEY is not set" << endl;
         return 1;
     }
 
@@ -43,7 +42,7 @@ int main(int argc, char* argv[]) {
             {
                 {"type", "function"},
                 {"function", {
-                    {"name", "Readtool"},
+                    {"name", "Read"},
                     {"description", "Read and return the contents of a file"},
                     {"parameters", {
                         {"type", "object"},
@@ -70,22 +69,36 @@ int main(int argc, char* argv[]) {
     );
 
     if (response.status_code != 200) {
-        std::cerr << "HTTP error: " << response.status_code << std::endl;
+        cerr << "HTTP error: " << response.status_code << endl;
         return 1;
     }
 
     json result = json::parse(response.text);
 
     if (!result.contains("choices") || result["choices"].empty()) {
-        std::cerr << "No choices in response" << std::endl;
+        cerr << "No choices in response" << endl;
         return 1;
     }
-
+    json toolcall = json::parse(result["choices"][0]["message"]["tool_calls"].get<string>);
+    string func_name = toolcall["function"]["name"].get<string>();
+    string args = result["choices"][0]["message"]["tool_calls"]["function"]["arguments"];
+    json args_data = json::parse(args);
+    string filepath = args_data["file_path"];
     // You can use print statements as follows for debugging, they'll be visible when running tests.
-    std::cerr << "Logs from your program will appear here!" << std::endl;
-
+    cerr << "Logs from your program will appear here!" << endl;
+    if (func_name == "Read"){
+        if (filesystem::exists(filepath)){
+            ifstream inFile(filepath);
+            string line;
+            while (getline(inFile, line)){
+                cout << line << endl;
+            }
+            
+        }
+    }
+    else {
     // TODO: Uncomment the line below to pass the first stage
-    std::cout << result["choices"][0]["message"]["content"].get<std::string>();
-
+    cout << result["choices"][0]["message"]["content"].get<string>();
+    }
     return 0;
 }
