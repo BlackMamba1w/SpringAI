@@ -39,23 +39,25 @@ int main(int argc, char* argv[]) {
                 {"content", prompt}
             }
         })},
-        {"tools", {
-            "type": "function",
-            "function": {
-                "name": "Readtool",
-                "description": "Read and return the contents of a file",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "file_path": {
-                            "type": "string",
-                            "description": "The path to the file to read"
-                        }
-                    },
-                    "required": ["file_path"]
+        {"tools", json::array(
+            {
+                {"type", "function"},
+                {"function", 
+                    {"name", "Readtool"},
+                    {"description", "Read and return the contents of a file"},
+                    {"parameters", {
+                        {"type", "object"},
+                        {"properties", {
+                            {"file_path", {
+                                {"type", "string"},
+                                {"description", "The path to the file to read"}
+                            }}
+                        }},
+                        {"required", ["file_path"]}
+                    }}
                 }
-            }}
-        }
+            }
+        )}
     };
 
     cpr::Response response = cpr::Post(
