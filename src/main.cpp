@@ -5,9 +5,12 @@
 #include <nlohmann/json.hpp>
 #include <filesystem>
 #include "funcs.hpp"
+#include <vector>
+#include "Configs.hpp"
 using json = nlohmann::json;
 using namespace std;
 int main(int argc, char* argv[]) {
+    Config models;
     cout << R"(
     ╭──────────────────────────────────────────────────────────────╮
     │                                                              │
@@ -34,7 +37,7 @@ int main(int argc, char* argv[]) {
     string api_key = "ollama";
     string base_url = "http://localhost:11434/v1";
     json request_body = {
-        {"model", "mistral:latest"},
+        {"model", models.chatModel},
         {"messages", json::array({
             {
                 {"role", "user"}, 
