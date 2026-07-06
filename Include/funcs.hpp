@@ -14,4 +14,5 @@ vector<Chunk> getChunks(const string& text1, const string& source, size_t chunk_
 string getLanguage(const filesystem::path& path);
 void saveChunks(const vector<Chunk>& chunks);
 vector<Chunk> loadChunks();
-float similarity(const vector<float>& A, const vector<float>& B){
+float similarity(const vector<float>& A, const vector<float>& B);
+string readFile(const fs::path& path);

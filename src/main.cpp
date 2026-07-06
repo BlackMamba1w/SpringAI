@@ -103,6 +103,30 @@ int main(int argc, char* argv[]) {
         })}
     };
     vector<float> embedding = getEmbedding(prompt);
+    vector<Chunk> chunks;
+    for (const auto& entry: fs::recursive_directory_iterator(".")){
+        if (passFile(entry)){
+            vector<Chunk> tempChunks = getChunks(readFiles(entry), path);
+            for (const auto& chunk: tempChunks){
+                chunks.push_back(chunk);
+            }
+        }
+    }
+    int k = min(5, (int)chunks.size());
+    partial_sort(
+        chunks.begin(),
+        chunks.begin() + k,
+        chunks.end(),
+        [&](const Chunk& a, const Chunk& b) {
+            return similarity(embedding, a.embed) >
+                similarity(embedding, b.embed);
+        }
+    );
+    vector<chunks> selected;
+    for (int i = 0; i < k; i++){
+        selected.push_back(chunks[i];)
+    }
+    
     while (true){
         ChatStatus status = chat(request_body);
         if (status == ChatStatus::Error){
