@@ -8,7 +8,7 @@
 using json = nlohmann::json;
 using namespace std;
 int main(int argc, char* argv[]) {
-    /* cout << R"(
+    cout << R"(
     ╭──────────────────────────────────────────────────────────────╮
     │                                                              │
     │   ███████╗██████╗ ██████╗ ██╗███╗   ██╗ ██████╗  █████╗ ██╗  │
@@ -22,7 +22,6 @@ int main(int argc, char* argv[]) {
     │                                                              │
     ╰──────────────────────────────────────────────────────────────╯
     )"; 
-    */
     if (argc < 3 || string(argv[1]) != "-p") {
         cerr << "Expected first argument to be '-p'" << endl;
         return 1;
@@ -32,16 +31,10 @@ int main(int argc, char* argv[]) {
         cerr << "Prompt must not be empty" << endl;
         return 1;
     }
-    const char* api_key_env = getenv("OPENROUTER_API_KEY");
-    const char* base_url_env = getenv("OPENROUTER_BASE_URL");
-    string api_key = api_key_env ? api_key_env : "";
-    string base_url = base_url_env ? base_url_env : "https://openrouter.ai/api/v1";
-    if (api_key.empty()) {
-        cerr << "OPENROUTER_API_KEY is not set" << endl;
-        return 1;
-    }
+    string api_key = "ollama";
+    string base_url = "http://localhost:11434/v1";
     json request_body = {
-        {"model", "anthropic/claude-haiku-4.5"},
+        {"model", "mistral:latest"},
         {"messages", json::array({
             {
                 {"role", "user"}, 
@@ -132,7 +125,7 @@ int main(int argc, char* argv[]) {
         }
         json message = response["choices"][0]["message"];
         if (!message.contains("tool_calls") || message["tool_calls"].is_null()) {
-            cout << message["content"].get<string>() << '\n';
+            cout << '\n\n\n' << message["content"].get<string>() << '\n';
             break;
         }
         request_body["messages"].push_back(message);
@@ -158,8 +151,8 @@ int main(int argc, char* argv[]) {
     }
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     cerr << "Logs from your program will appear here!" << endl;
-    if (request_body["message"].contains("content") && request_body["message"]["content"].is_string()) {
-        string content = request_body["message"]["content"];
+    if (request_body["messages"].contains("content") && request_body["message"]["content"].is_string()) {
+        string content = request_body["messages"]["content"];
         cout << content << '\n';
     }
     return 0;
