@@ -7,6 +7,7 @@
 #include "funcs.hpp"
 #include <vector>
 #include "Configs.hpp"
+#include "ChatStatus.hpp"
 using json = nlohmann::json;
 using namespace std;
 int main(int argc, char* argv[]) {
@@ -34,8 +35,6 @@ int main(int argc, char* argv[]) {
         cerr << "Prompt must not be empty" << endl;
         return 1;
     }
-    string api_key = "ollama";
-    string base_url = "http://localhost:11434/v1";
     json request_body = {
         {"model", models.chatModel},
         {"messages", json::array({
@@ -103,53 +102,15 @@ int main(int argc, char* argv[]) {
         })}
     };
     while (true){
-        json toolcall;
-        string tool;
-        string args;
-        json args_data;
-        string filepath;
-        string contents;
-        cpr::Response http = cpr::Post(
-            cpr::Url{base_url + "/chat/completions"},
-            cpr::Header{
-                {"Authorization", "Bearer " + api_key},
-                {"Content-Type", "application/json"}
-            },
-            cpr::Body{request_body.dump()}
-        );
-        if (http.status_code != 200) {
-            cerr << "HTTP error: " << http.status_code << endl;
+        ChatStatus status = chat(request_body);
+        if (status == ChatStatus::Error){
             return 1;
         }
-        json response = json::parse(http.text);
-        if (!response.contains("choices") || response["choices"].empty()) {
-            cerr << "No choices in response" << endl;
-            return 1;
-        }
-        json message = response["choices"][0]["message"];
-        if (!message.contains("tool_calls") || message["tool_calls"].is_null()) {
-            cout << '\n\n\n' << message["content"].get<string>() << '\n';
+        else if (status == ChatStatus::Finished){
             break;
         }
-        request_body["messages"].push_back(message);
-        toolcall = message["tool_calls"][0];
-        tool = toolcall["function"]["name"].get<string>();
-        args = message["tool_calls"][0]["function"]["arguments"];
-        args_data = json::parse(args);
-        if (tool == "Read"){
-            filepath = args_data["file_path"];
-            json toolMessage = readFile(filepath, toolcall["id"].get<string>());
-            request_body["messages"].push_back(toolMessage);
-        }
-        else if(tool == "Write"){
-            filepath = args_data["file_path"];
-            contents = args_data["content"];
-            json toolMessage = writeFile(filepath, contents, toolcall["id"].get<string>());
-            request_body["messages"].push_back(toolMessage);
-        }
-        else if(tool == "Bash"){
-            json toolMessage = exec(args_data["command"], toolcall["id"].get<string>());
-            request_body["messages"].push_back(toolMessage);
+        else{
+            continue;
         }
     }
     // You can use print statements as follows for debugging, they'll be visible when running tests.
