@@ -5,10 +5,10 @@
 #include <vector>
 struct Chunk {
     int id;
-    int startLine;
-    int endLine;
+    int startPos;
+    int endPos;
     string text;
-    string filepath;
+    string source;
     vector<float> embed;
     string language;
 };

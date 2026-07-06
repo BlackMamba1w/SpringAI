@@ -8,6 +8,7 @@
 #include <vector>
 #include "Configs.hpp"
 #include "ChatStatus.hpp"
+#include "Chunk.hpp"
 using json = nlohmann::json;
 using namespace std;
 int main(int argc, char* argv[]) {
@@ -101,6 +102,7 @@ int main(int argc, char* argv[]) {
             }
         })}
     };
+    vector<float> embedding = getEmbedding(prompt);
     while (true){
         ChatStatus status = chat(request_body);
         if (status == ChatStatus::Error){
