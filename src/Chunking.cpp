@@ -10,6 +10,7 @@
 #include "Chunk.hpp"
 using namespace std;
 using json = nlohmann::json;
+namespace fs = std::filesystem;
 string getLanguage(const fs::path& path) {
     string ext = path.extension().string();
     if (ext == ".cpp" || ext == ".cc" || ext == ".cxx")
@@ -40,7 +41,7 @@ string getLanguage(const fs::path& path) {
         return "markdown";
     return "text";
 }
-vector<Chunk> getChunks(const string& text1, const fs::path& path, size_t chunk_size = 800, size_t overlap = 150){
+vector<Chunk> getChunks(const string& text1, const fs::path& path, size_t chunk_size, size_t overlap){
     size_t pos = 0;
     int idx = 0;
     vector<Chunk> chunks;
@@ -90,7 +91,7 @@ vector<Chunk> loadChunks(){
         chunk.source = item["source"];
         chunk.language = item["language"];
         chunk.text = item["text"];
-        chunk.embed = item["embed"];
+        chunk.embed = item["embed"].get<vector<float>>();
         chunks.push_back(chunk);
     }
     return chunks;

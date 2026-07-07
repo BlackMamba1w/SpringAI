@@ -14,7 +14,7 @@ using json = nlohmann::json;
 using namespace std;
 float similarity(const vector<float>& A, const vector<float>& B){
     if (A.size() != B.size()){
-        throw runtime_error("Vector dimensions do not match.")
+        throw runtime_error("Vector dimensions do not match.");
     }
     float dot_product;
     float norm_A;

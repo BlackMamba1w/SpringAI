@@ -8,12 +8,13 @@
 #include <vector>
 #include "Configs.hpp"
 #include "ChatStatus.hpp"
-#include "Chunk.hpp" 
+#include "Chunk.hpp"
+namespace fs = std::filesystem;
 void saveFileChunks(){
     vector<Chunk> chunks;
     for (const auto& entry: fs::recursive_directory_iterator(".")){
         if (passFile(entry)){
-            vector<Chunk> tempChunks = getChunks(readFiles(entry), path);
+            vector<Chunk> tempChunks = getChunks(readFiles(entry.path()), entry.path());
             for (const auto& chunk: tempChunks){
                 chunks.push_back(chunk);
             }
@@ -33,13 +34,12 @@ string retrieveContext(const int& x, const vector<float>& embedding){
         }
     );
     vector<Chunk> retrieved;
-    float best = chunks[0].similarity;
+    float best = similarity(chunks[0].embed, embedding);
     if (best < 0.80f){
         return "";
     }
-    
     for (int i = 0; i < k; i++){
-        if(similarity(chunks[i].embed, embedding) > 0.70f || similarity(chunks[i], embedding) >= best - REL_MARGIN){
+        if(similarity(chunks[i].embed, embedding) > 0.70f || similarity(chunks[i].embed, embedding) >= best - 0.05f){
             retrieved.push_back(chunks[i]);
         }
     }
@@ -47,7 +47,7 @@ string retrieveContext(const int& x, const vector<float>& embedding){
     for (const auto& chunk : retrieved){
         context += "File: " + chunk.source + '\n';
         context += chunk.text;
-        context += '\n\n\n'
+        context += '\n' + '\n' + '\n';
     }
-    
+    return context;
 }

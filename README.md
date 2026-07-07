@@ -40,6 +40,7 @@ All functions that I use in `src/main.cpp` can be found in `src/funcs.cpp` and a
 One can run the shell via *WSL* or *Terminal* by travelling to the directory and running:
 
 ```sh
+./build.sh
 ./claude.sh
 ```
 
@@ -48,7 +49,7 @@ One can run the shell via *WSL* or *Terminal* by travelling to the directory and
 1. Ensure you have `cmake` and `Ninja-build` installed locally
 2. Run `./claude.sh` to run your program, which is implemented in
    `src/main.cpp`.
-3. Ensure you have ollama mistral installed locally (or you can configure you're model as you choose in `src/main.cpp` and have it running.
+3. Ensure you have ollama mistral installed locally (or you can configure your model as you choose in `src/main.cpp` and have it running).
 
 # Example usage of tool
 

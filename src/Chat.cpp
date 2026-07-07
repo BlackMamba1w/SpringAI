@@ -9,11 +9,7 @@
 #include "Configs.hpp"
 using json = nlohmann::json;
 using namespace std;
-enum class ChatStatus {
-    Continue,
-    Finished,
-    Error
-};
+
 ChatStatus chat(json& request_body){
     json toolcall;
     string tool;
@@ -23,7 +19,7 @@ ChatStatus chat(json& request_body){
     string contents;
     Config models;
     cpr::Response http = cpr::Post(
-            cpr::Url{models.baseUrl + "/chat/completions"},
+            cpr::Url{models.baseUrl + "/v1/chat/completions"},
             cpr::Header{
                 {"Authorization", "Bearer " + models.apiKey},
                 {"Content-Type", "application/json"}
@@ -41,13 +37,13 @@ ChatStatus chat(json& request_body){
     }
     json message = response["choices"][0]["message"];
     if (!message.contains("tool_calls") || message["tool_calls"].is_null()) {
-        cout << '\n\n\n' << message["content"].get<string>() << '\n';
+        cout << '\n' + '\n' + '\n' << message["content"].get<string>() << '\n';
         return ChatStatus::Finished;
     }
     request_body["messages"].push_back(message);
     toolcall = message["tool_calls"][0];
     tool = toolcall["function"]["name"].get<string>();
-    args_data = json::parse(message["tool_calls"][0]["function"]["arguments"]);
+    args_data = json::parse(message["tool_calls"][0]["function"]["arguments"].get<string>());
     if (tool == "Read"){
         filepath = args_data["file_path"];
         json toolMessage = readFile(filepath, toolcall["id"].get<string>());
@@ -66,4 +62,5 @@ ChatStatus chat(json& request_body){
         request_body["messages"].push_back(toolMessage);
         return ChatStatus::Continue;
     }
+    return ChatStatus::Error;
 }

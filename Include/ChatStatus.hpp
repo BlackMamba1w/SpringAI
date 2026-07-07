@@ -2,10 +2,10 @@
 #define CHATSTATUS_H
 
 // Enum definition
-typedef enum {
+enum class ChatStatus {
     Continue,
     Finished,
     Error
-} ChatStatus;
+};
 
 #endif  // Include guard end

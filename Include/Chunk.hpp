@@ -3,8 +3,9 @@
 
 #include <string>
 #include <vector>
+using namespace std;
 struct Chunk {
-    int id;
+    string id;
     int startPos;
     int endPos;
     string text;

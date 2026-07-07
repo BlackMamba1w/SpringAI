@@ -8,6 +8,7 @@
 #include <vector>
 #include "Configs.hpp"
 #include "Chunk.hpp"
+namespace fs = std::filesystem;
 using namespace std;
 using json = nlohmann::json;
 bool passFile(const fs::path& path){
@@ -19,7 +20,7 @@ bool passFile(const fs::path& path){
         ".cmake"
     };
     bool b1 = exts.contains(path.extension().string());
-    bool b2 = filesystem::is_regular_file();
+    bool b2 = fs::is_regular_file(path);
     bool b3;
     static const set<string> names = {
         ".git",
