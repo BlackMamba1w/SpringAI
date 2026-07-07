@@ -16,3 +16,5 @@ void saveChunks(const vector<Chunk>& chunks);
 vector<Chunk> loadChunks();
 float similarity(const vector<float>& A, const vector<float>& B);
 string readFile(const fs::path& path);
+void saveFileChunks();
+string retrieveContext(const int& x, const vector<float>& embedding);

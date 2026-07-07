@@ -103,47 +103,29 @@ int main(int argc, char* argv[]) {
         })}
     };
     vector<float> embedding = getEmbedding(prompt);
-    vector<Chunk> chunks;
-    for (const auto& entry: fs::recursive_directory_iterator(".")){
-        if (passFile(entry)){
-            vector<Chunk> tempChunks = getChunks(readFiles(entry), path);
-            for (const auto& chunk: tempChunks){
-                chunks.push_back(chunk);
+    saveFileChunks();
+    string context = retrieveContext(5, embedding);
+    if (!context.empty()){
+        request_body["messages"].insert(
+            request_body["messages"].begin(),
+            {
+                {"role", "system"},
+                {
+                    "content", "You are assisting with the current codebase.\nUse the following project context if it is relevant.\nIf it is not relevant, ignore it.\n\n" + context
+                }
             }
-        }
+        );
     }
-    int k = min(5, (int)chunks.size());
-    partial_sort(
-        chunks.begin(),
-        chunks.begin() + k,
-        chunks.end(),
-        [&](const Chunk& a, const Chunk& b) {
-            return similarity(embedding, a.embed) >
-                similarity(embedding, b.embed);
-        }
-    );
-    vector<chunks> selected;
-    for (int i = 0; i < k; i++){
-        selected.push_back(chunks[i];)
-    }
-    
     while (true){
         ChatStatus status = chat(request_body);
         if (status == ChatStatus::Error){
             return 1;
         }
-        else if (status == ChatStatus::Finished){
+        if (status == ChatStatus::Finished){
             break;
-        }
-        else{
-            continue;
         }
     }
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     cerr << "Logs from your program will appear here!" << endl;
-    if (request_body["messages"].contains("content") && request_body["message"]["content"].is_string()) {
-        string content = request_body["messages"]["content"];
-        cout << content << '\n';
-    }
     return 0;
 }
