@@ -144,7 +144,7 @@ if __name__ == "__main__":
 The respective files should be created in your project directory. Please do not install this tool yet, as it is still work in progress.
 
 # Contact author
-Please do email the author at *k.sainandan2011@gmail.com* if you wish to offer help, suggestions or would like to work on this project together by forming a team. Will respond in 3-5 days. This Project is in a very early stage. 
+Please do email the author at *k.sainandan2011@gmail.com* if you wish to offer help, suggestions or would like to work on this project together with me by forming a team. Will respond in 3-5 days. This Project is in a very early stage. 
 I am planning on implementing the following features over the coming months:
    1. Image handling capability
    2. Persistent Memory
