@@ -1,6 +1,7 @@
-![progress-banner](<img width="1298" height="632" alt="image" src="https://github.com/user-attachments/assets/6294a597-43dc-471e-88b1-3580abdd5471" />
-)
-
+<img src="https://github.com/user-attachments/assets/6294a597-43dc-471e-88b1-3580abdd5471"
+     alt="SpringAI Banner"
+     style="width:100%;">
+     
 # Introduction
 
 In this project, I am building my own AI coding assistant for projects. This project is still in a very early developmental stage as it is still only a solo passion project by a student. However, I am planning to implement distillation, fine-tuning and persistent memory as time passes.
