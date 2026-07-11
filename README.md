@@ -1,4 +1,5 @@
-![SpringAI Banner](https://github.com/user-attachments/assets/6294a597-43dc-471e-88b1-3580abdd5471)
+![SpringAI Banner](<img width="746" height="218" alt="image" src="https://github.com/user-attachments/assets/1d85595c-5ba6-4eb8-b6bb-df26354a13cd" />
+)
 
 # Introduction
 
