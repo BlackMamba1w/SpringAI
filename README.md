@@ -38,7 +38,7 @@ After that, run
 ./Spring.sh -p "Your prompt here"
 ```
 
-and voila, your response should be there in a pretty long time (Spare me I'm still working on this D:)
+and voila, your response should be there... in a pretty long time. (Spare me, I'm still working on this.)
 
 # Set-up instructions:
 
