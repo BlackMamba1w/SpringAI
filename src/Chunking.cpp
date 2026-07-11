@@ -4,13 +4,18 @@
 #include <cpr/cpr.h>
 #include <nlohmann/json.hpp>
 #include <filesystem>
+#include <fstream>
+#include <unordered_map>
 #include "funcs.hpp"
 #include <vector>
 #include "Configs.hpp"
 #include "Chunk.hpp"
+#include "FileInfo.hpp"
 using namespace std;
 using json = nlohmann::json;
 namespace fs = std::filesystem;
+static constexpr size_t DEFAULT_CHUNK_SIZE = 800;
+static constexpr size_t DEFAULT_OVERLAP = 150;
 string getLanguage(const fs::path& path) {
     string ext = path.extension().string();
     if (ext == ".cpp" || ext == ".cc" || ext == ".cxx")
@@ -41,13 +46,12 @@ string getLanguage(const fs::path& path) {
         return "markdown";
     return "text";
 }
-vector<Chunk> getChunks(const string& text1, const fs::path& path, size_t chunk_size, size_t overlap){
+vector<Chunk> getChunks(const string& text1, const fs::path& path) {
     size_t pos = 0;
     int idx = 0;
     vector<Chunk> chunks;
     while (pos < text1.size()) {
-        size_t end = std::min(pos + chunk_size, text1.size());
-        // try not to cut mid-word: walk back to nearest space/newline
+        size_t end = min(pos + chunk_size, text1.size());
         if (end < text1.size()) {
             size_t back = end;
             while (back > pos && !isspace((unsigned char)text1[back])) back--;
@@ -60,13 +64,71 @@ vector<Chunk> getChunks(const string& text1, const fs::path& path, size_t chunk_
         chunk.id = source + "_Chunk_" + to_string(idx++);
         chunk.language = getLanguage(path);
         chunk.source = source;
-        chunk.text = text1.substr(pos, end);
-        chunk.embed = getEmbedding(text1.substr(pos, end));
+        chunk.text = text1.substr(pos, end - pos);
+        chunk.embed = getEmbedding(chunk.text);
         chunks.push_back(chunk);
+        if (end == text1.size()) {
+            break;
+        }
+        pos = (end > overlap) ? end - overlap : end;
     }
     return chunks;
 }
-void saveChunks(const vector<Chunk>& chunks){
+FileInfo saveFileInfo(const fs::directory_entry& entr) {
+    FileInfo info;
+    info.last_modified = fs::last_write_time(entr.path());
+    info.source = entr.path().string();
+    return info;
+}
+unordered_map<string, fs::file_time_type> loadFileTimes() {
+    unordered_map<string, fs::file_time_type> fileTimes;
+    ifstream in("data/files.json");
+    if (!in) return fileTimes;
+    json root;
+    in >> root;
+    for (const auto& item : root) {
+        string source = item["source"];
+        int64_t ticks = item["last_modified"];
+        fileTimes[source] = fs::file_time_type(fs::file_time_type::duration(ticks));
+    }
+    return fileTimes;
+}
+void saveChunks() {
+    unordered_map<string, fs::file_time_type> oldTimes = loadFileTimes();
+    unordered_map<string, vector<Chunk>> chunkMap;
+    vector<Chunk> oldChunks = loadChunks(); 
+    for (const auto& chunk : oldChunks){
+        chunkMap[chunk.source].push_back(chunk);
+    }
+    vector<FileInfo> infos;
+    vector<Chunk> chunks;
+    for (const auto& entry : fs::recursive_directory_iterator(".")) {
+        if (passFile(entry)) {
+            string source = entry.path().string();
+            fs::file_time_type currentTime = fs::last_write_time(entry.path());
+            auto it = oldTimes.find(source);
+            bool changed = (it == oldTimes.end()) || (it->second != currentTime); 
+            if (changed) {
+                vector<Chunk> tempChunks = getChunks(readFiles(entry.path()), entry.path());
+                chunks.insert(
+                    chunks.end(),
+                    tempChunks.begin(),
+                    tempChunks.end()
+                );
+            }
+            else {
+                auto it = chunkMap.find(source);
+                if (it != chunkMap.end()) {
+                    chunks.insert(
+                        chunks.end(),
+                        it -> second.begin(),
+                        it -> second.end()
+                    );
+                }
+            }
+            infos.push_back(saveFileInfo(entry));
+        }
+    }
     json root = json::array();
     for (const auto& chunk : chunks) {
         root.push_back({
@@ -74,14 +136,29 @@ void saveChunks(const vector<Chunk>& chunks){
             {"source", chunk.source},
             {"language", chunk.language},
             {"text", chunk.text},
-            {"embed", chunk.embed}
+            {"embed", chunk.embed},
+            {"startPos", chunk.startPos},
+            {"endPos", chunk.endPos}
         });
     }
+    fs::create_directories("data");
     ofstream out("data/chunks.json");
     out << root.dump(4);
+    json root2 = json::array();
+    for (const auto& file : infos) {
+        root2.push_back({
+            {"last_modified", file.last_modified.time_since_epoch().count()},
+            {"source", file.source}
+        });
+    }
+    ofstream out2("data/files.json");
+    out2 << root2.dump(4);
 }
-vector<Chunk> loadChunks(){
+vector<Chunk> loadChunks() {
     ifstream in("data/chunks.json");
+    if (!in) {
+        return {};
+    }
     json root;
     in >> root;
     vector<Chunk> chunks;
@@ -92,6 +169,8 @@ vector<Chunk> loadChunks(){
         chunk.language = item["language"];
         chunk.text = item["text"];
         chunk.embed = item["embed"].get<vector<float>>();
+        chunk.startPos = item["startPos"];
+        chunk.endPos = item["endPos"];
         chunks.push_back(chunk);
     }
     return chunks;

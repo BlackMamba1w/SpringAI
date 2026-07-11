@@ -11,6 +11,7 @@
 using namespace std;
 using json = nlohmann::json;
 vector<float> getEmbedding(const string& text) {
+    cout << "getting embedding...";
     Config models;
     if (text.empty()) {
         throw invalid_argument("Input text cannot be empty.");

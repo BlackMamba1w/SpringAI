@@ -7,6 +7,8 @@
 #include <sstream>
 #include "ChatStatus.hpp"
 #include "Chunk.hpp"
+#include <unordered_map>
+#include "FileInfo.hpp"
 namespace fs = std::filesystem;
 using namespace std;
 using json = nlohmann::json;
@@ -17,10 +19,11 @@ vector<float> getEmbedding(const string& text);
 ChatStatus chat(json& request_body);
 vector<Chunk> getChunks(const string& text1, const fs::path& path, size_t chunk_size = 800, size_t overlap = 150);
 string getLanguage(const filesystem::path& path);
-void saveChunks(const vector<Chunk>& chunks);
+void saveChunks();
 vector<Chunk> loadChunks();
 float similarity(const vector<float>& A, const vector<float>& B);
 string readFiles(const fs::path& path);
-void saveFileChunks();
 string retrieveContext(const int& x, const vector<float>& embedding);
 bool passFile(const fs::path& path);
+unordered_map<string, fs::file_time_type> loadFileTimes();
+FileInfo saveFileInfo(const fs::directory_entry& entr);

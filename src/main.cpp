@@ -9,6 +9,7 @@
 #include "Configs.hpp"
 #include "ChatStatus.hpp"
 #include "Chunk.hpp"
+#include "FileInfo.hpp"
 using json = nlohmann::json;
 using namespace std;
 int main(int argc, char* argv[]) {
@@ -102,8 +103,8 @@ int main(int argc, char* argv[]) {
             }
         })}
     };
+    saveChunks();
     vector<float> embedding = getEmbedding(prompt);
-    saveFileChunks();
     string context = retrieveContext(5, embedding);
     if (!context.empty()){
         request_body["messages"].insert(

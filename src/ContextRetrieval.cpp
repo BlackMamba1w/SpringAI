@@ -9,18 +9,8 @@
 #include "Configs.hpp"
 #include "ChatStatus.hpp"
 #include "Chunk.hpp"
+#include "FileInfo.hpp"
 namespace fs = std::filesystem;
-void saveFileChunks(){
-    vector<Chunk> chunks;
-    for (const auto& entry: fs::recursive_directory_iterator(".")){
-        if (passFile(entry)){
-            vector<Chunk> tempChunks = getChunks(readFiles(entry.path()), entry.path());
-            for (const auto& chunk: tempChunks){
-                chunks.push_back(chunk);
-            }
-        }
-    }
-}
 string retrieveContext(const int& x, const vector<float>& embedding){
     vector<Chunk> chunks = loadChunks();
     int k = min(x, (int)chunks.size());
