@@ -1,4 +1,4 @@
-[![progress-banner](<img width="1298" height="632" alt="image" src="https://github.com/user-attachments/assets/6294a597-43dc-471e-88b1-3580abdd5471" />
+![progress-banner](<img width="1298" height="632" alt="image" src="https://github.com/user-attachments/assets/6294a597-43dc-471e-88b1-3580abdd5471" />
 )
 
 # Introduction
