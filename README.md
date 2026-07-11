@@ -1,11 +1,9 @@
-[![progress-banner](https://camo.githubusercontent.com/f4f22828b0f14d4b9eab189bcd1df9caa7414ceb16e5cf64420a717df5ac4716/68747470733a2f2f6261636b656e642e636f646563726166746572732e696f2f70726f67726573732f636c617564652d636f64652f36666662373030312d616639632d343537322d386166342d653366306334366661346633)](https://app.codecrafters.io/users/BlackMamba1w?r=2qF)
+[![progress-banner](<img width="1298" height="632" alt="image" src="https://github.com/user-attachments/assets/6294a597-43dc-471e-88b1-3580abdd5471" />
+)
 
 # Introduction
 
-Claude Code is an AI coding assistant that uses Large Language Models (LLMs) to
-understand code and perform actions through tool calls. In this challenge,
-I will build my own Claude Code from scratch by implementing an LLM-powered
-coding assistant.
+In this project, I am building my own AI coding assistant for projects. This project is still in a very early developmental stage as it is still only a solo passion project by a student. However, I am planning to implement distillation, fine-tuning and persistent memory as time passes.
 
 ```
 ╭──────────────────────────────────────────────────────────────╮
@@ -21,35 +19,35 @@ coding assistant.
 │                                                              │
 ╰──────────────────────────────────────────────────────────────╯
 ```
-I will be using HTTP RESTful APIs (OpenAI-compatible tool), calling, agent loop, and how to integrate multiple tools into an AI assistant.
+As of now, I used HTTP RESTful APIs (OpenAI-compatible tool), calling, agent loop, and am integrating multiple tools into an AI assistant. I have also implemented a RAG (Retrieval-Augmented Generation) system, such that files are vector-embedded with the help of the nomic-embedding model from ollama.
 
 
 # Programme structure and aim
 
-The entry point for my `claude-code` implementation is in `src/main.cpp`.
-This project is mainly for me to learn json parsing, and to learn how to pull API requests from openAI. Will complete by 7/16/2026.
+The entry point for my `SpringAI` implementation is in `src/main.cpp`.
+All header files can be found in `include` and tools are in `src/tools`.
 
+# To run:
+
+First, you need to build and install all necessary packages with
 ```sh
-./claude.sh
+./build
+```
+Do make sure you have ollama installed and the required models serving for now. Will switch to an API key in future commits.
+After that, run
+
+```
+./Spring.sh -p "Your prompt here"
 ```
 
-# Programme structure
-
-The entry point for my `shell` implementation is in `src/main.cpp`.
-All functions that I use in `src/main.cpp` can be found in `src/funcs.cpp` and are defined in `funcs.hpp`.
-One can run the shell via *WSL* or *Terminal* by travelling to the directory and running:
-
-```sh
-./build.sh
-./claude.sh
-```
+and voila, your response should be there in a pretty long time (Spare me I'm still working on this D:)
 
 # Set-up instructions:
 
 1. Ensure you have `cmake` and `Ninja-build` installed locally
-2. Run `./claude.sh` to run your program, which is implemented in
+2. Run `./Spring.sh` to run your program, which is implemented in
    `src/main.cpp`.
-3. Ensure you have ollama mistral installed locally (or you can configure your model as you choose in `src/main.cpp` and have it running).
+3. Ensure you have ollama mistral and ollama nomic-embedded-text installed locally (or you can configure your model as you choose in `include/Configs.hpp` and have it running).
 
 # Example usage of tool
 
@@ -145,6 +143,13 @@ if __name__ == "__main__":
     main()
 
 ```
+The respective files should be created in your project directory. Please do not install this tool yet, as it is still work in progress.
 
 # Contact author
-Contact the author of this agent to suggest any improvements @ *k.sainandan2011@gmail.com* ! Will respond in 3-5 business days. This Project is about 20% complete, and I am planning to add my own features soon upon completing the challenge.
+Please do email the author at *k.sainandan2011@gmail.com* if you wish to offer help, suggestions or would like to work on this project together by forming a team. Will respond in 3-5 days. This Project is in a very early stage. 
+I am planning on implementing the following features over the coming months:
+   1. Image handling capability
+   2. Persistent Memory
+   3. Distillation and Finetuning of model
+   4. Small-Scale MLA implementation
+   5. Interactive command line interface
