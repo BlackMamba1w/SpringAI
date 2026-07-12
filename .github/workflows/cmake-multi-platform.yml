@@ -1,4 +1,4 @@
-name: CMake on multiple platforms
+name: CMake CI
 
 on:
   push:
@@ -13,73 +13,44 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        build_type: [Release]
-        c_compiler: [gcc, clang, cl]
         include:
-          - os: windows-latest
-            c_compiler: cl
-            cpp_compiler: cl
           - os: ubuntu-latest
-            c_compiler: gcc
-            cpp_compiler: g++
+            cc: gcc
+            cxx: g++
+
           - os: ubuntu-latest
-            c_compiler: clang
-            cpp_compiler: clang++
-        exclude:
+            cc: clang
+            cxx: clang++
+
           - os: windows-latest
-            c_compiler: gcc
-          - os: windows-latest
-            c_compiler: clang
-          - os: ubuntu-latest
-            c_compiler: cl
+            cc: cl
+            cxx: cl
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set reusable strings
-      id: strings
-      shell: bash
-      run: |
-        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-        echo "vcpkg-downloads-dir=${{ github.workspace }}/vcpkg_downloads" >> "$GITHUB_OUTPUT"
+      # Install vcpkg
+      - name: Set up vcpkg
+        uses: lukka/run-vcpkg@v11
 
-    # Step 1: Configure Github Cache for vcpkg binary artifacts
-    - name: Cache vcpkg binaries
-      uses: actions/cache@v4
-      with:
-        path: ${{ steps.strings.outputs.vcpkg-downloads-dir }}
-        # The cache key changes if you change your source code dependencies 
-        # (Assuming you use a vcpkg.json manifest file or similar)
-        key: ${{ runner.os }}-${{ matrix.c_compiler }}-vcpkg-${{ hashFiles('vcpkg.json') }}
-        restore-keys: |
-          ${{ runner.os }}-${{ matrix.c_compiler }}-vcpkg-
+      # Configure CMake
+      - name: Configure CMake
+        env:
+          CC: ${{ matrix.cc }}
+          CXX: ${{ matrix.cxx }}
+        run: >
+          cmake
+          -B build
+          -S .
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
 
-    # Step 2: Setup vcpkg and point its internal binary storage to our cached directory
-    - name: Setup vcpkg
-      uses: lukka/run-vcpkg@v11
-      with:
-        vcpkgGitCommitId: 'latest'
-      env:
-        # Forces vcpkg to read/write binaries inside our tracked GitHub Cache path
-        VCPKG_DEFAULT_BINARY_CACHE: ${{ steps.strings.outputs.vcpkg-downloads-dir }}
+      # Build
+      - name: Build
+        run: cmake --build build --config Release
 
-    # Step 3: Configure CMake with Ninja and your VCPKG Toolchain file
-    - name: Configure CMake
-      run: >
-        cmake -B ${{ steps.strings.outputs.build-output-dir }}
-        -G Ninja
-        -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
-        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
-        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -S ${{ github.workspace }}
-      env:
-        VCPKG_DEFAULT_BINARY_CACHE: ${{ steps.strings.outputs.vcpkg-downloads-dir }}
-
-    - name: Build
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
-
-    - name: Test
-      working-directory: ${{ steps.strings.outputs.build-output-dir }}
-      run: ctest --build-config ${{ matrix.build_type }}
+      # Test (optional)
+      - name: Test
+        working-directory: build
+        run: ctest --output-on-failure --build-config Release
