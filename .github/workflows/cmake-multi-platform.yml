@@ -44,11 +44,7 @@ jobs:
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
         echo "vcpkg-downloads-dir=${{ github.workspace }}/vcpkg_downloads" >> "$GITHUB_OUTPUT"
 
-    # Step 1: Install Ninja (required since you specified -G Ninja earlier)
-    - name: Install Ninja
-      uses: wheelsandbytes/setup-ninja@v1
-
-    # Step 2: Configure Github Cache for vcpkg binary artifacts
+    # Step 1: Configure Github Cache for vcpkg binary artifacts
     - name: Cache vcpkg binaries
       uses: actions/cache@v4
       with:
@@ -59,7 +55,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-${{ matrix.c_compiler }}-vcpkg-
 
-    # Step 3: Setup vcpkg and point its internal binary storage to our cached directory
+    # Step 2: Setup vcpkg and point its internal binary storage to our cached directory
     - name: Setup vcpkg
       uses: lukka/run-vcpkg@v11
       with:
@@ -68,7 +64,7 @@ jobs:
         # Forces vcpkg to read/write binaries inside our tracked GitHub Cache path
         VCPKG_DEFAULT_BINARY_CACHE: ${{ steps.strings.outputs.vcpkg-downloads-dir }}
 
-    # Step 4: Configure CMake with Ninja and your VCPKG Toolchain file
+    # Step 3: Configure CMake with Ninja and your VCPKG Toolchain file
     - name: Configure CMake
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
