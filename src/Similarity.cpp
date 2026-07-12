@@ -16,9 +16,9 @@ float similarity(const vector<float>& A, const vector<float>& B){
     if (A.size() != B.size()){
         throw runtime_error("Vector dimensions do not match.");
     }
-    float dot_product;
-    float norm_A;
-    float norm_B;
+    float dot_product = 0;
+    float norm_A = 0;
+    float norm_B = 0;
     for (size_t i = 0; i < A.size(); i++){
         dot_product += A[i] * B[i];
         norm_A += A[i];

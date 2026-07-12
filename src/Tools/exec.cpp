@@ -4,6 +4,10 @@
 #include <string>
 #include <array>
 #include <nlohmann/json.hpp>
+#ifdef _WIN32
+#define popen _popen
+#define pclose _pclose
+#endif
 using namespace std;
 using json = nlohmann::json;
 json exec(const string& cmd, const string& tool_call_id){
