@@ -23,29 +23,61 @@ jobs:
             cxx: clang++
 
           - os: windows-latest
-            cc: cl
-            cxx: cl
-
     steps:
       - uses: actions/checkout@v4
 
       # Install vcpkg
       - name: Set up vcpkg
         uses: lukka/run-vcpkg@v11
+      - name: Debug vcpkg (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          echo "==== Environment Variables ===="
+          echo "VCPKG_ROOT=$VCPKG_ROOT"
+          echo "VCPKG_INSTALLATION_ROOT=$VCPKG_INSTALLATION_ROOT"
+          env | grep VCPKG || true
+
+          echo
+          echo "==== Common locations ===="
+          ls -la "$HOME" || true
+          ls -la "$HOME/vcpkg" || true
+      - name: Debug vcpkg (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Write-Host "==== Environment Variables ===="
+          Get-ChildItem Env: | Where-Object { $_.Name -like "*VCPKG*" }
+
+          Write-Host "`n==== User Profile ===="
+          Get-ChildItem $HOME -Force
 
       # Configure CMake
-      - name: Configure CMake
+      - name: Configure CMake (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
         env:
           CC: ${{ matrix.cc }}
           CXX: ${{ matrix.cxx }}
-        run: >
-          cmake
-          -B build
-          -S .
-          -G Ninja
-          -DCMAKE_BUILD_TYPE=Release
-          -DCMAKE_TOOLCHAIN_FILE=$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake
+        run: |
+          cmake \
+            -B build \
+            -S . \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_TOOLCHAIN_FILE="$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
+      - name: Configure CMake (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          Write-Host "VCPKG_ROOT=$env:VCPKG_ROOT"
+          Write-Host "VCPKG_INSTALLATION_ROOT=$env:VCPKG_INSTALLATION_ROOT"
 
+          cmake `
+            -B build `
+            -S . `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
       # Build
       - name: Build
         run: cmake --build build --config Release
