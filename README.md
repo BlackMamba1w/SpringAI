@@ -50,7 +50,7 @@ and voila, your response should be there... in a pretty long time. (Spare me, I'
 # Example usage of tool
 
 ```
-chosen_one@Cyberspace:/mnt/c/Users/saina/Downloads/Claude_Code_CLI_API$ ./claude.sh -p "Create a python file with an implementation of djikstra's algorithm and A* algorithm in it as 2 functions"
+chosen_one@Cyberspace:/mnt/c/Users/saina/Downloads/Claude_Code_CLI_API$ ./Spring.sh -p "Create a python file with an implementation of djikstra's algorithm and A* algorithm in it as 2 functions"
 
     ╭──────────────────────────────────────────────────────────────╮
     │                                                              │
