@@ -46,9 +46,7 @@ string getLanguage(const fs::path& path) {
         return "markdown";
     return "text";
 }
-vector<Chunk> getChunks(const string& text1, const fs::path& path) {
-    size_t overlap = 150;
-    size_t chunk_size = 800;
+vector<Chunk> getChunks(const string& text1, const fs::path& path, size_t chunk_size, size_t overlap) {
     size_t pos = 0;
     int idx = 0;
     vector<Chunk> chunks;
