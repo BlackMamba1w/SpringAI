@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(codecrafters-claude-code LANGUAGES CXX)
+project(SpringAI LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,13 +13,17 @@ file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
 find_package(cpr CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 
-add_executable(claude-code ${SOURCE_FILES})
+add_executable(springai ${SOURCE_FILES})
 
-target_include_directories(claude-code PRIVATE
+install(TARGETS springai
+    RUNTIME DESTINATION bin
+)
+
+target_include_directories(springai PRIVATE
     include
 )
 
-target_link_libraries(claude-code PRIVATE
+target_link_libraries(springai PRIVATE
     cpr::cpr
     nlohmann_json::nlohmann_json
 )
