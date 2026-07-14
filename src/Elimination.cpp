@@ -22,7 +22,7 @@ bool passFile(const fs::path& path){
     bool b1 = exts.contains(path.extension().string());
     bool b2 = fs::is_regular_file(path);
     bool b3;
-    static const set<string> names = {
+    static const set<string> ignored = {
         ".git",
         ".vscode",
         "build",
@@ -33,10 +33,9 @@ bool passFile(const fs::path& path){
         ".cache",
         "vcpkg_installed"
     };
-    for (auto& name: names){
-        if (names.contains(path.string())){
+    for (const auto& part : path) {
+        if (ignored.contains(part.string()))
             return false;
-        }
     }
     return b1 && b2;
 }

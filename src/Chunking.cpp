@@ -51,6 +51,11 @@ vector<Chunk> getChunks(const string& text1, const fs::path& path, size_t chunk_
     int idx = 0;
     vector<Chunk> chunks;
     while (pos < text1.size()) {
+        cout << "Embedding "
+        << i + 1
+        << "/"
+        << chunks.size()
+        << endl;
         size_t end = min(pos + chunk_size, text1.size());
         if (end < text1.size()) {
             size_t back = end;
