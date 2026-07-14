@@ -15,8 +15,7 @@ bool passFile(const fs::path& path){
     static const set<string> exts = {
         ".cpp", ".hpp", ".h", ".c",
         ".py", ".java", ".js", ".ts",
-        ".rs", ".go", ".md", ".txt",
-        ".json", ".yaml", ".yml",
+        ".rs", ".go", ".json", ".yaml", ".yml",
         ".cmake"
     };
     bool b1 = exts.contains(path.extension().string());

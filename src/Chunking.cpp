@@ -50,12 +50,15 @@ vector<Chunk> getChunks(const string& text1, const fs::path& path, size_t chunk_
     size_t pos = 0;
     int idx = 0;
     vector<Chunk> chunks;
+    int i = 0;
     while (pos < text1.size()) {
+        size_t total = (text1.size() + chunk_size - overlap - 1) / (chunk_size - overlap);
+        size_t current = idx + 1;
         cout << "Embedding "
-        << i + 1
-        << "/"
-        << chunks.size()
-        << endl;
+            << current
+            << "/"
+            << total
+            << endl;
         size_t end = min(pos + chunk_size, text1.size());
         if (end < text1.size()) {
             size_t back = end;
