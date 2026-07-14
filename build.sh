@@ -4,4 +4,4 @@ cmake -B build -G Ninja \
     -DCMAKE_TOOLCHAIN_FILE=$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake
 
 cmake --build build
-cmake --install build
+sudo cmake --install build
