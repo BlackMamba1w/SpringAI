@@ -73,7 +73,18 @@ vector<Chunk> getChunks(const string& text1, const fs::path& path, size_t chunk_
         chunk.language = getLanguage(path);
         chunk.source = source;
         chunk.text = text1.substr(pos, end - pos);
+        if (path.filename() == "README.md" && idx == 2) {
+            cout << "Chunk contents:\n";
+            cout << chunk.text << endl;
+
+            cout << "\nBytes:\n";
+            for (unsigned char c : chunk.text) {
+                printf("%02X ", c);
+            }
+            cout << endl;
+        }
         chunk.embed = getEmbedding(chunk.text);
+        cout << "F";
         chunks.push_back(chunk);
         if (end == text1.size()) {
             break;

@@ -15,8 +15,10 @@ vector<float> getEmbedding(const string& text) {
     if (text.empty()) {
         throw invalid_argument("Input text cannot be empty.");
     }
+    cout << "A";
     json payload = {{"model", models.embeddingModel},
                     {"input", text}};
+    cout << "B";
     cpr::Response response = cpr::Post(
                         cpr::Url{models.baseUrl + "/api/embed"},
                         cpr::Header{
@@ -24,13 +26,16 @@ vector<float> getEmbedding(const string& text) {
                         },
                         cpr::Body{payload.dump()}
                     );
+    cout << "C";
     if (response.status_code != 200) {
         throw runtime_error("Embedding request failed: " + response.text);
     }
     json result = json::parse(response.text);
+    cout << "D";
     if (!result.contains("embeddings")){
         throw runtime_error("No embedding returned.");
     }
     vector<float> embedding = result["embeddings"][0].get<vector<float>>();
+    cout << "E";
     return embedding;
 }
